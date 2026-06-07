@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de KPIs - Dashboard Andes Retail</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FFF8F0 0%, #FFE8D6 100%);
+            color: #370617;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #E85D04 0%, #DC2F02 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(232, 93, 4, 0.3);
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .nav-tab {
+            padding: 15px 25px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #370617;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-tab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(232, 93, 4, 0.3);
+        }
+        
+        .nav-tab.active {
+            background: linear-gradient(135deg, #E85D04 0%, #DC2F02 100%);
+            color: white;
+            box-shadow: 0 6px 15px rgba(232, 93, 4, 0.4);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #E85D04;
+        }
+        
+        .section h2 {
+            color: #E85D04;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section h3 {
+            color: #DC2F02;
+            font-size: 1.3em;
+            margin: 25px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #FFE8D6;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .kpi-card {
+            background: linear-gradient(135deg, #FFF8F0 0%, #FFFFFF 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #E85D04;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(232, 93, 4, 0.2);
+        }
+        
+        .kpi-card.success { border-left-color: #2A9D8F; }
+        .kpi-card.warning { border-left-color: #E76F51; }
+        .kpi-card.danger { border-left-color: #D62828; }
+        
+        .kpi-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #370617;
+            margin-bottom: 10px;
+        }
+        
+        .kpi-formula {
+            background: #F4E5D3;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin: 10px 0;
+            color: #6C757D;
+        }
+        
+        .kpi-interpretation {
+            color: #6C757D;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+        
+        .kpi-action {
+            background: #E85D04;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        
+        .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+        
+        .alert-info {
+            background: #E3F2FD;
+            border-left-color: #2196F3;
+            color: #1565C0;
+        }
+        
+        .alert-success {
+            background: #E8F5E9;
+            border-left-color: #4CAF50;
+            color: #2E7D32;
+        }
+        
+        .alert-warning {
+            background: #FFF3E0;
+            border-left-color: #FF9800;
+            color: #E65100;
+        }
+        
+        .interpretation-box {
+            background: #F8F9FA;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #E85D04;
+        }
+        
+        .interpretation-box h4 {
+            color: #E85D04;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .traffic-light {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .traffic-light-item {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .traffic-light-green {
+            background: #D4EDDA;
+            color: #155724;
+            border: 2px solid #28A745;
+        }
+        
+        .traffic-light-yellow {
+            background: #FFF3CD;
+            color: #856404;
+            border: 2px solid #FFC107;
+        }
+        
+        .traffic-light-red {
+            background: #F8D7DA;
+            color: #721C24;
+            border: 2px solid #DC3545;
+        }
+        
+        ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin: 8px 0;
+            color: #6C757D;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #FFBA08 0%, transparent 100%);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #6C757D;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8em; }
+            .kpi-grid { grid-template-columns: 1fr; }
+            .nav-tabs { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Guía de KPIs Ejecutivos</h1>
+            <p>Dashboard Estratégico Andes Retail</p>
+        </header>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('intro')">🎯 Introducción</button>
+            <button class="nav-tab" onclick="showTab('executive')">📈 Resumen Ejecutivo</button>
+            <button class="nav-tab" onclick="showTab('sales')">💰 Ventas</button>
+            <button class="nav-tab" onclick="showTab('logistics')">🚚 Logística</button>
+            <button class="nav-tab" onclick="showTab('customer')">😊 Clientes</button>
+            <button class="nav-tab" onclick="showTab('risk')">⚠️ Riesgo</button>
+        </div>
+        
+        <!-- INTRODUCCIÓN -->
+        <div id="intro" class="tab-content active">
+            <div class="section">
+                <h2><span class="icon">🎯</span>¿Qué es este Dashboard?</h2>
+                <p style="font-size: 1.1em; margin-bottom: 20px;">
+                    El Dashboard Estratégico Andes Retail es una herramienta ejecutiva que consolida <strong>38 indicadores clave de desempeño (KPIs)</strong> 
+                    organizados en <strong>5 áreas estratégicas</strong> para facilitar la toma de decisiones basada en datos.
+                </p>
+                
+                <div class="alert alert-info">
+                    <strong>💡 Objetivo:</strong> Proporcionar visibilidad completa del negocio en tiempo real, identificar oportunidades de mejora 
+                    y detectar riesgos operativos antes de que impacten los resultados.
+                </div>
+                
+                <h3>📋 Estructura del Dashboard</h3>
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-title">1️⃣ Resumen Ejecutivo</div>
+                        <div class="kpi-interpretation">
+                            Vista panorámica con los 8 KPIs más críticos: ventas, ticket promedio, OTIF, cancelaciones.
+                            <strong>Úselo para:</strong> Evaluación rápida del estado del negocio.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">2️⃣ Ventas y Rentabilidad</div>
+                        <div class="kpi-interpretation">
+                            Análisis profundo de ingresos, márgenes, participación por región y categoría.
+                            <strong>Úselo para:</strong> Identificar productos y mercados más rentables.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">3️⃣ Logística y Cumplimiento</div>
+                        <div class="kpi-interpretation">
+                            Monitoreo de tiempos de entrega, OTIF, entregas tardías por región.
+                            <strong>Úselo para:</strong> Detectar problemas operativos y mejorar servicio.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">4️⃣ Clientes y Experiencia</div>
+                        <div class="kpi-interpretation">
+                            Satisfacción del cliente, calificaciones, relación entre servicio y experiencia.
+                            <strong>Úselo para:</strong> Prevenir pérdida de clientes y mejorar lealtad.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">5️⃣ Categorías, Vendedores y Riesgo</div>
+                        <div class="kpi-interpretation">
+                            Desempeño por vendedor, medios de pago, matriz estratégica de categorías.
+                            <strong>Úselo para:</strong> Optimizar portafolio y gestionar riesgos.
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>🎨 Cómo Usar los Filtros Globales</h3>
+                <p>Todos los KPIs responden a los filtros en tiempo real:</p>
+                <ul>
+                    <li><strong>Rango de Fechas:</strong> Compare períodos (mes actual vs anterior, trimestre, año)</li>
+                    <li><strong>Estado Cliente:</strong> Analice desempeño por región geográfica</li>
+                    <li><strong>Categoría:</strong> Evalúe productos específicos</li>
+                    <li><strong>Estado Pedido:</strong> Filtre por entregados, cancelados, en proceso</li>
+                    <li><strong>Medio de Pago:</strong> Compare comportamiento por forma de pago</li>
+                </ul>
+                
+                <div class="alert alert-success">
+                    <strong>✅ Recomendación:</strong> Comience siempre por el Resumen Ejecutivo para obtener una vista general, 
+                    luego profundice en las áreas que requieran atención según los semáforos de alerta.
+                </div>
+            </div>
+        </div>
+        
+        <!-- RESUMEN EJECUTIVO -->
+        <div id="executive" class="tab-content">
+            <div class="section">
+                <h2><span class="icon">📈</span>Resumen Ejecutivo - 8 KPIs Críticos</h2>
+                
+                <div class="kpi-grid">
+                    <div class="kpi-card success">
+                        <div class="kpi-title">KPI 1: Ventas Netas Totales</div>
+                        <div class="kpi-formula">Fórmula: SUM(precio)</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Ingresos totales generados por ventas de productos (sin incluir flete).<br>
+                            <strong>Interpretación:</strong> Valor absoluto en pesos. Compárelo con períodos anteriores para identificar tendencias.<br>
+                            <strong>Acción:</strong> Si disminuye, revise participación por región y categoría en la pestaña Ventas.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 2: Ticket Promedio</div>
+                        <div class="kpi-formula">Fórmula: SUM(precio) / COUNT(pedidos únicos)</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Valor promedio que gasta cada cliente por pedido.<br>
+                            <strong>Interpretación:</strong> Ticket alto = clientes compran productos de mayor valor o más unidades.<br>
+                            <strong>Acción:</strong> Si es bajo, considere estrategias de cross-selling o up-selling.
+                        </div>
+                        <div class="interpretation-box">
+                            <h4>📊 Benchmarks Típicos</h4>
+                            <div class="traffic-light">
+                                <div class="traffic-light-green">Excelente: > $200</div>
+                                <div class="traffic-light-yellow">Aceptable: $100-$200</div>
+                                <div class="traffic-light-red">Bajo: < $100</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card danger">
+                        <div class="kpi-title">KPI 3: Tasa de Cancelación</div>
+                        <div class="kpi-formula">Fórmula: Pedidos cancelados / Total pedidos</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Porcentaje de pedidos que no se completaron.<br>
+                            <strong>Interpretación:</strong> Alta cancelación indica problemas de inventario, precios o experiencia de compra.<br>
+                            <strong>Acción:</strong> Investigue causas por categoría y vendedor. Meta: < 2%.
+                        </div>
+                        <div class="interpretation-box">
+                            <h4>🚨 Semáforo de Alerta</h4>
+                            <div class="traffic-light">
+                                <div class="traffic-light-green">Saludable: < 1%</div>
+                                <div class="traffic-light-yellow">Atención: 1-3%</div>
+                                <div class="traffic-light-red">Crítico: > 3%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card success">
+                        <div class="kpi-title">KPI 4: OTIF (On-Time In-Full)</div>
+                        <div class="kpi-formula">Fórmula: Pedidos entregados a tiempo / Total entregados</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Cumplimiento de la promesa de entrega.<br>
+                            <strong>Interpretación:</strong> Indicador clave de calidad operativa. Impacta directamente la satisfacción del cliente.<br>
+                            <strong>Acción:</strong> Si < 90%, revise logística por región en la pestaña correspondiente.
+                        </div>
+                        <div class="interpretation-box">
+                            <h4>🎯 Metas de Clase Mundial</h4>
+                            <div class="traffic-light">
+                                <div class="traffic-light-green">Excelente: ≥ 95%</div>
+                                <div class="traffic-light-yellow">Aceptable: 80-94%</div>
+                                <div class="traffic-light-red">Deficiente: < 80%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 5: Cantidad Vendida</div>
+                        <div class="kpi-formula">Fórmula: COUNT(items de pedido)</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Número total de unidades vendidas.<br>
+                            <strong>Interpretación:</strong> Volumen de operación. Compare con ventas netas para entender mix de productos.<br>
+                            <strong>Acción:</strong> Si volumen crece pero ventas no, revise estrategia de precios.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 6: Unidades por Venta</div>
+                        <div class="kpi-formula">Fórmula: Cantidad vendida / Pedidos únicos</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Promedio de productos por pedido.<br>
+                            <strong>Interpretación:</strong> Valor alto indica compras múltiples. Bajo = compras unitarias.<br>
+                            <strong>Acción:</strong> Implemente bundling o promociones para aumentar este indicador.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card danger">
+                        <div class="kpi-title">KPI 7: Entregas Tardías</div>
+                        <div class="kpi-formula">Fórmula: COUNT(pedidos con fecha entrega > fecha prometida)</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Número absoluto de incumplimientos de entrega.<br>
+                            <strong>Interpretación:</strong> Complementa OTIF. Identifique patrones por región o transportista.<br>
+                            <strong>Acción:</strong> Priorice regiones con mayor incidencia para mejora operativa.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card danger">
+                        <div class="kpi-title">KPI 8: Valor Cancelaciones</div>
+                        <div class="kpi-formula">Fórmula: SUM(precio de pedidos cancelados)</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Ingresos perdidos por cancelaciones.<br>
+                            <strong>Interpretación:</strong> Impacto financiero directo de la tasa de cancelación.<br>
+                            <strong>Acción:</strong> Calcule como % de ventas netas. Si > 2%, requiere intervención inmediata.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>⚡ Uso Ejecutivo:</strong> Estos 8 KPIs deben revisarse diariamente. Configure alertas automáticas 
+                    cuando OTIF < 90%, Tasa Cancelación > 2%, o Ventas Netas caigan > 10% vs período anterior.
+                </div>
+            </div>
+        </div>
+        
+        <!-- VENTAS Y RENTABILIDAD -->
+        <div id="sales" class="tab-content">
+            <div class="section">
+                <h2><span class="icon">💰</span>Ventas y Rentabilidad</h2>
+                
+                <h3>KPIs Financieros Clave</h3>
+                <div class="kpi-grid">
+                    <div class="kpi-card success">
+                        <div class="kpi-title">KPI 9: Ingreso Neto Real</div>
+                        <div class="kpi-formula">Fórmula: Ventas Netas - Valor Cancelaciones</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Ingresos efectivos después de cancelaciones.<br>
+                            <strong>Por qué importa:</strong> Refleja el ingreso real que impacta el flujo de caja.<br>
+                            <strong>Acción:</strong> Use este valor para proyecciones financieras, no las ventas brutas.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 14: Margen Neto Proxy</div>
+                        <div class="kpi-formula">Fórmula: (Ventas - Flete - Cancelaciones) / Ventas</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Estimación de margen después de costos logísticos.<br>
+                            <strong>Interpretación:</strong> No incluye costo de producto, solo flete. Es un proxy, no margen real.<br>
+                            <strong>Acción:</strong> Compare por región. Regiones con margen bajo pueden tener costos logísticos altos.
+                        </div>
+                        <div class="interpretation-box">
+                            <h4>📈 Análisis por Región</h4>
+                            <p>Regiones con margen proxy bajo pueden indicar:</p>
+                            <ul>
+                                <li>Distancias largas (alto costo de flete)</li>
+                                <li>Productos de bajo valor con flete fijo</li>
+                                <li>Oportunidad de optimizar logística</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Análisis de Participación</h3>
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 10: Participación por Región</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> % de ventas que aporta cada estado.<br>
+                            <strong>Cómo interpretarlo:</strong>
+                            <ul>
+                                <li><span class="highlight">Concentración alta</span> (ej: 80% en 3 estados) = riesgo de dependencia</li>
+                                <li><span class="highlight">Distribución equilibrada</span> = menor riesgo, mayor estabilidad</li>
+                            </ul>
+                            <strong>Acción:</strong> Diversifique si > 60% viene de una sola región.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 11: Participación por Categoría</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> % de ventas por tipo de producto.<br>
+                            <strong>Uso estratégico:</strong> Identifique categorías estrella vs categorías de cola larga.<br>
+                            <strong>Acción:</strong> Aplique regla 80/20: ¿El 20% de categorías genera el 80% de ventas?
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 16: Análisis Pareto</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Curva acumulada de ventas por categoría.<br>
+                            <strong>Interpretación:</strong> Visualiza qué % de categorías genera qué % de ingresos.<br>
+                            <strong>Decisión:</strong> Categorías en el 80% acumulado son prioritarias para inventario y marketing.
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Tendencias y Crecimiento</h3>
+                <div class="kpi-card">
+                    <div class="kpi-title">KPI 12: Crecimiento Mensual de Ventas</div>
+                    <div class="kpi-formula">Fórmula: (Ventas mes actual - Ventas mes anterior) / Ventas mes anterior</div>
+                    <div class="kpi-interpretation">
+                        <strong>Qué mide:</strong> Variación porcentual mes a mes.<br>
+                        <strong>Interpretación:</strong>
+                        <ul>
+                            <li><strong>Positivo:</strong> Crecimiento. Identifique qué lo impulsó (campaña, temporada, nuevos productos)</li>
+                            <li><strong>Negativo:</strong> Contracción. Investigue causas (competencia, estacionalidad, problemas operativos)</li>
+                            <li><strong>Volátil:</strong> Negocio estacional. Normalice comparando con mismo mes año anterior</li>
+                        </ul>
+                        <strong>Acción:</strong> Establezca meta de crecimiento mensual (ej: 5%) y monitoree desviaciones.
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <strong>💡 Consejo Ejecutivo:</strong> Combine KPI 10 (Participación por Región) con KPI 14 (Margen Proxy) 
+                    para identificar regiones de alto valor: alta participación + alto margen = prioridad estratégica.
+                </div>
+            </div>
+        </div>
+        
+        <!-- LOGÍSTICA Y CUMPLIMIENTO -->
+        <div id="logistics" class="tab-content">
+            <div class="section">
+                <h2><span class="icon">🚚</span>Logística y Cumplimiento</h2>
+                
+                <div class="alert alert-warning">
+                    <strong>⚠️ Importancia Crítica:</strong> La logística impacta directamente la satisfacción del cliente. 
+                    Un OTIF bajo (< 90%) puede causar pérdida de clientes incluso si el producto es excelente.
+                </div>
+                
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 17: Tiempo Promedio de Entrega</div>
+                        <div class="kpi-formula">Fórmula: AVG(fecha entrega - fecha compra) en días</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Días promedio desde que el cliente compra hasta que recibe el producto.<br>
+                            <strong>Benchmarks:</strong>
+                            <ul>
+                                <li><strong>E-commerce estándar:</strong> 7-10 días</li>
+                                <li><strong>E-commerce premium:</strong> 3-5 días</li>
+                                <li><strong>Same-day/Next-day:</strong> 0-1 días</li>
+                            </ul>
+                            <strong>Acción:</strong> Compare con competencia. Si es > 10 días, evalúe cambio de transportista o centros de distribución.
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div class="kpi-card danger">
+                        <div class="kpi-title">KPI 18: Tiempo Promedio de Retraso</div>
+                        <div class="kpi-formula">Fórmula: AVG(fecha entrega - fecha prometida) solo para entregas tardías</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Cuántos días de retraso tienen los pedidos que llegan tarde.<br>
+                            <strong>Interpretación:</strong>
+                            <ul>
+                                <li><strong>1-2 días:</strong> Retrasos menores, posiblemente aceptables</li>
+                                <li><strong>3-5 días:</strong> Problema moderado, afecta experiencia</li>
+                                <li><strong>> 5 días:</strong> Problema grave, requiere intervención inmediata</li>
+                            </ul>
+                            <strong>Acción:</strong> Analice causas raíz por región y transportista.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 20: Entregas Tardías por Región</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Distribución geográfica de incumplimientos.<br>
+                            <strong>Uso estratégico:</strong> Identifique regiones problemáticas para intervención focalizada.<br>
+                            <strong>Decisiones posibles:</strong>
+                            <ul>
+                                <li>Cambiar transportista en regiones con alta incidencia</li>
+                                <li>Ajustar promesas de entrega (mejor prometer 10 días y cumplir que prometer 5 y fallar)</li>
+                                <li>Abrir centro de distribución en región crítica</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card success">
+                        <div class="kpi-title">KPI 21: OTIF por Región</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Cumplimiento de entrega a tiempo por estado.<br>
+                            <strong>Análisis comparativo:</strong>
+                            <ul>
+                                <li><strong>Regiones con OTIF > 95%:</strong> Operación excelente, use como benchmark</li>
+                                <li><strong>Regiones con OTIF 80-95%:</strong> Aceptable pero mejorable</li>
+                                <li><strong>Regiones con OTIF < 80%:</strong> Requiere plan de acción urgente</li>
+                            </ul>
+                            <strong>Acción:</strong> Replique mejores prácticas de regiones top en regiones con bajo desempeño.
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Costo de Incumplimiento</h3>
+                <div class="kpi-card danger">
+                    <div class="kpi-title">KPI 23: Costo Operativo de Incumplimiento</div>
+                    <div class="kpi-formula">Fórmula: SUM(flete pedidos tardíos) + SUM(precio pedidos cancelados)</div>
+                    <div class="kpi-interpretation">
+                        <strong>Qué mide:</strong> Impacto financiero de problemas logísticos.<br>
+                        <strong>Componentes:</strong>
+                        <ul>
+                            <li><strong>Flete de pedidos tardíos:</strong> Costo logístico desperdiciado en entregas que no cumplieron</li>
+                            <li><strong>Ventas canceladas:</strong> Ingresos perdidos por mal servicio</li>
+                        </ul>
+                        <strong>Interpretación:</strong> Si este valor es > 3% de ventas netas, la logística está destruyendo valor.<br>
+                        <strong>Acción:</strong> Justifique inversión en mejora logística con este número.
+                    </div>
+                </div>
+                
+                <div class="interpretation-box">
+                    <h4>🎯 Metas Recomendadas para Alta Dirección</h4>
+                    <ul>
+                        <li><strong>OTIF:</strong> ≥ 95% (clase mundial)</li>
+                        <li><strong>Tiempo de Entrega:</strong> ≤ 7 días promedio</li>
+                        <li><strong>Entregas Tardías:</strong> < 5% del total</li>
+                        <li><strong>Costo de Incumplimiento:</strong> < 2% de ventas netas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CLIENTES Y EXPERIENCIA -->
+        <div id="customer" class="tab-content">
+            <div class="section">
+                <h2><span class="icon">😊</span>Clientes y Experiencia</h2>
+                
+                <div class="alert alert-success">
+                    <strong>✅ Principio Clave:</strong> La satisfacción del cliente es el indicador líder de crecimiento futuro. 
+                    Clientes satisfechos recompran, recomiendan y toleran mejor los errores ocasionales.
+                </div>
+                
+                <div class="kpi-grid">
+                    <div class="kpi-card success">
+                        <div class="kpi-title">KPI 24: Calificación Promedio del Cliente</div>
+                        <div class="kpi-formula">Fórmula: AVG(review_score) escala 1-5</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Satisfacción general del cliente.<br>
+                            <strong>Interpretación:</strong>
+                            <div class="traffic-light">
+                                <div class="traffic-light-green">Excelente: ≥ 4.5</div>
+                                <div class="traffic-light-yellow">Aceptable: 3.5-4.4</div>
+                                <div class="traffic-light-red">Crítico: < 3.5</div>
+                            </div>
+                            <strong>Acción:</strong> Si cae por debajo de 4.0, investigue causas inmediatamente.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 25: Distribución de Calificaciones</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Proporción de cada calificación (1-5 estrellas).<br>
+                            <strong>Análisis:</strong>
+                            <ul>
+                                <li><strong>Muchos 5 estrellas:</strong> Clientes muy satisfechos, potencial de advocacy</li>
+                                <li><strong>Muchos 1-2 estrellas:</strong> Problemas graves, riesgo de pérdida de clientes</li>
+                                <li><strong>Concentración en 3-4:</strong> Experiencia promedio, oportunidad de diferenciación</li>
+                            </ul>
+                            <strong>Acción:</strong> Lea reviews de 1-2 estrellas para identificar problemas recurrentes.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 28: Índice de Recompra</div>
+                        <div class="kpi-formula">Fórmula: Clientes con > 1 pedido / Total clientes</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Lealtad del cliente.<br>
+                            <strong>Benchmarks:</strong>
+                            <ul>
+                                <li><strong>E-commerce general:</strong> 20-30%</li>
+                                <li><strong>E-commerce con programa de lealtad:</strong> 40-60%</li>
+                                <li><strong>Suscripciones:</strong> 70-90%</li>
+                            </ul>
+                            <strong>Interpretación:</strong> Bajo índice = problema de retención. Cuesta 5-7x más adquirir un cliente nuevo que retener uno existente.<br>
+                            <strong>Acción:</strong> Implemente programa de lealtad, email marketing post-compra, descuentos para segunda compra.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card warning">
+                        <div class="kpi-title">KPI 27: Riesgo de Pérdida de Clientes</div>
+                        <div class="kpi-formula">Fórmula: Clientes con pedidos cancelados o review ≤ 2 / Total clientes</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> % de clientes con mala experiencia.<br>
+                            <strong>Interpretación:</strong> Estos clientes probablemente no volverán a comprar.<br>
+                            <strong>Acción:</strong>
+                            <ul>
+                                <li>Contacte proactivamente para resolver problemas</li>
+                                <li>Ofrezca compensación (descuento, envío gratis)</li>
+                                <li>Use feedback para mejorar procesos</li>
+                            </ul>
+                            <strong>Meta:</strong> < 5% de clientes en riesgo.
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Análisis Avanzado</h3>
+                <div class="kpi-card">
+                    <div class="kpi-title">KPI 29: Relación Tiempo de Entrega vs Satisfacción</div>
+                    <div class="kpi-interpretation">
+                        <strong>Qué mide:</strong> Correlación entre días de entrega y calificación del cliente.<br>
+                        <strong>Insight esperado:</strong> A mayor tiempo de entrega, menor calificación.<br>
+                        <strong>Uso estratégico:</strong>
+                        <ul>
+                            <li>Cuantifique el impacto de la logística en satisfacción</li>
+                            <li>Justifique inversión en logística más rápida</li>
+                            <li>Identifique el "punto de quiebre" (ej: entregas > 15 días tienen calificación < 3)</li>
+                        </ul>
+                        <strong>Acción:</strong> Si la correlación es fuerte, priorice mejora de tiempos de entrega sobre otras iniciativas.
+                    </div>
+                </div>
+                
+                <div class="interpretation-box">
+                    <h4>🎯 Framework de Acción por Calificación</h4>
+                    <ul>
+                        <li><strong>5 estrellas:</strong> Solicite referidos, testimonios, casos de éxito</li>
+                        <li><strong>4 estrellas:</strong> Identifique qué faltó para ser 5, mejore esos aspectos</li>
+                        <li><strong>3 estrellas:</strong> Experiencia neutra, oportunidad de sorprender positivamente</li>
+                        <li><strong>1-2 estrellas:</strong> Contacto inmediato, resolución de problema, compensación</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- RIESGO OPERATIVO -->
+        <div id="risk" class="tab-content">
+            <div class="section">
+                <h2><span class="icon">⚠️</span>Categorías, Vendedores y Riesgo Operativo</h2>
+                
+                <h3>Análisis de Canales de Pago</h3>
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 31: Participación por Medio de Pago</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> % de pedidos por forma de pago.<br>
+                            <strong>Riesgos a monitorear:</strong>
+                            <ul>
+                                <li><strong>Dependencia de un solo método:</strong> Si > 80% es tarjeta de crédito, vulnerabilidad ante cambios en procesadores</li>
+                                <li><strong>Alto uso de boleto bancario:</strong> Mayor riesgo de no pago</li>
+                            </ul>
+                            <strong>Acción:</strong> Diversifique opciones de pago para reducir riesgo.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-title">KPI 32: Ticket Promedio por Medio de Pago</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Valor promedio de compra según forma de pago.<br>
+                            <strong>Insight típico:</strong> Tarjeta de crédito suele tener ticket más alto que efectivo/débito.<br>
+                            <strong>Acción:</strong> Incentive métodos de pago con mayor ticket (ej: cuotas sin interés en tarjeta).
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Gestión de Vendedores</h3>
+                <div class="kpi-grid">
+                    <div class="kpi-card success">
+                        <div class="kpi-title">KPI 33: Top 10 Vendedores por Ventas</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Ranking de vendedores por ingresos generados.<br>
+                            <strong>Análisis de concentración:</strong>
+                            <ul>
+                                <li><strong>Top 10 genera > 50% de ventas:</strong> Alta concentración, riesgo de dependencia</li>
+                                <li><strong>Distribución equilibrada:</strong> Menor riesgo, mayor estabilidad</li>
+                            </ul>
+                            <strong>Acción:</strong> Desarrolle vendedores medianos para reducir dependencia de top performers.
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card danger">
+                        <div class="kpi-title">KPI 34: Tasa de Cancelación por Vendedor</div>
+                        <div class="kpi-formula">Fórmula: Pedidos cancelados / Total pedidos por vendedor</div>
+                        <div class="kpi-interpretation">
+                            <strong>Qué mide:</strong> Calidad operativa de cada vendedor.<br>
+                            <strong>Causas de alta cancelación:</strong>
+                            <ul>
+                                <li>Problemas de inventario (vende lo que no tiene)</li>
+                                <li>Mala descripción de productos</li>
+                                <li>Precios no competitivos</li>
+                                <li>Servicio al cliente deficiente</li>
+                            </ul>
+                            <strong>Acción:</strong> Vendedores con tasa > 5% requieren capacitación o suspensión.
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Matriz Estratégica de Categorías</h3>
+                <div class="kpi-card">
+                    <div class="kpi-title">KPI 38: Matriz Estratégica Categoría vs Servicio</div>
+                    <div class="kpi-interpretation">
+                        <strong>Qué mide:</strong> Posicionamiento de categorías en 2 dimensiones: Ventas (X) vs Calificación (Y).<br>
+                        <strong>Cuadrantes:</strong>
+                        <div class="interpretation-box">
+                            <h4>📊 Interpretación de Cuadrantes</h4>
+                            <ul>
+                                <li><strong>Alto X, Alto Y (Arriba Derecha):</strong> ⭐ CATEGORÍAS ESTRELLA - Mantener y potenciar</li>
+                                <li><strong>Alto X, Bajo Y (Abajo Derecha):</strong> ⚠️ CATEGORÍAS CRÍTICAS - Altas ventas pero baja satisfacción. Riesgo de pérdida de clientes. Acción urgente.</li>
+                                <li><strong>Bajo X, Alto Y (Arriba Izquierda):</strong> 💎 CATEGORÍAS CON POTENCIAL - Buena experiencia pero pocas ventas. Invertir en marketing.</li>
+                                <li><strong>Bajo X, Bajo Y (Abajo Izquierda):</strong> ❌ CATEGORÍAS A REVISAR - Considerar descontinuar o rediseñar estrategia.</li>
+                            </ul>
+                        </div>
+                        <strong>Tamaño de burbuja:</strong> Cantidad vendida (volumen de operación).<br>
+                        <strong>Color:</strong> OTIF % (calidad logística).<br>
+                        <strong>Acción:</strong> Asigne recursos según cuadrante. Priorice categorías críticas para evitar daño reputacional.
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>🚨 Señales de Alerta Temprana</strong>
+                    <p>Monitoree estos indicadores semanalmente para detectar problemas antes de que escalen:</p>
+                    <ul>
+                        <li>Tasa de cancelación > 2% en cualquier categoría o región</li>
+                        <li>OTIF < 85% en cualquier región por 2 semanas consecutivas</li>
+                        <li>Calificación promedio < 4.0 en cualquier categoría</li>
+                        <li>Vendedor con tasa de cancelación > 5%</li>
+                        <li>Crecimiento mensual negativo por 2 meses consecutivos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p><strong>Dashboard Estratégico Andes Retail</strong></p>
+            <p>Guía de KPIs para Alta Dirección | Versión 1.0</p>
+            <p style="margin-top: 10px; color: #999;">
+                💡 Consejo: Imprima esta guía o manténgala abierta en una pestaña mientras usa el dashboard
+            </p>
+        </footer>
+    </div>
+    
+    <script>
+        function showTab(tabId) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.nav-tab');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    </script>
+</body>
+</html>
