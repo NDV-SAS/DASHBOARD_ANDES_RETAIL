@@ -1,0 +1,9 @@
+archivo,filas,columnas,csv_MB,parquet_MB,reduccion_%
+olist_customers_dataset.parquet,99441,5,8.62,6.68,22.5
+olist_order_items_dataset.parquet,112650,7,14.72,6.13,58.3
+olist_order_payments_dataset.parquet,103886,5,5.51,3.64,34.0
+olist_order_reviews_dataset.parquet,99224,7,13.78,9.08,34.1
+olist_orders_dataset.parquet,99441,8,16.84,10.01,40.5
+olist_products_dataset.parquet,32951,9,2.27,1.34,40.8
+olist_sellers_dataset.parquet,3095,4,0.17,0.13,23.7
+product_category_name_translation.parquet,71,2,0.0,0.0,-67.1
