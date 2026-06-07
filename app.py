@@ -7,6 +7,16 @@ import plotly.graph_objects as go
 from prepare_data import get_master_data
 from calculate_kpis import calculate_all_kpis, get_monthly_sales, get_sales_by_region, get_sales_by_category
 
+customers = pd.read_parquet("data/olist_customers_dataset.parquet")
+order_items = pd.read_parquet("data/olist_order_items_dataset.parquet")
+payments = pd.read_parquet("data/olist_order_payments_dataset.parquet")
+reviews = pd.read_parquet("data/olist_order_reviews_dataset.parquet")
+orders = pd.read_parquet("data/olist_orders_dataset.parquet")
+products = pd.read_parquet("data/olist_products_dataset.parquet")
+sellers = pd.read_parquet("data/olist_sellers_dataset.parquet")
+categories = pd.read_parquet("data/product_category_name_translation.parquet")
+
+
 app = Dash(__name__)
 
 # Load data
