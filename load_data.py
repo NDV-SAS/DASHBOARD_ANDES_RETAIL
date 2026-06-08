@@ -3,17 +3,18 @@ from pathlib import Path
 
 def load_all_datasets():
     """Load all Olist datasets."""
-    uploads = Path(__file__).parent / "uploads"
     
-    orders = pd.read_csv(uploads / "olist_orders_dataset.csv")
-    order_items = pd.read_csv(uploads / "olist_order_items_dataset.csv")
-    payments = pd.read_csv(uploads / "olist_order_payments_dataset.csv")
-    reviews = pd.read_csv(uploads / "olist_order_reviews_dataset.csv")
-    customers = pd.read_csv(uploads / "olist_customers_dataset.csv")
-    products = pd.read_csv(uploads / "olist_products_dataset.csv")
-    sellers = pd.read_csv(uploads / "olist_sellers_dataset.csv")
-    categories = pd.read_csv(uploads / "product_category_name_translation.csv")
-    
+    data = Path(__file__).parent / "data"
+
+    orders = pd.read_parquet(data / "olist_orders_dataset.parquet")
+    order_items = pd.read_parquet(data / "olist_order_items_dataset.parquet")
+    payments = pd.read_parquet(data / "olist_order_payments_dataset.parquet")
+    reviews = pd.read_parquet(data / "olist_order_reviews_dataset.parquet")
+    customers = pd.read_parquet(data / "olist_customers_dataset.parquet")
+    products = pd.read_parquet(data / "olist_products_dataset.parquet")
+    sellers = pd.read_parquet(data / "olist_sellers_dataset.parquet")
+    categories = pd.read_parquet(data / "product_category_name_translation.parquet")
+        
     return {
         'orders': orders,
         'order_items': order_items,
@@ -44,29 +45,3 @@ def display():
         })}
     ]
 
-# --- Execute display() ---
-"""Serializes and outputs the result of display() for the Plotly Studio runtime."""
-
-#import json
-#import traceback
-
-#from utils.display_util import _dumps, _serialize_result  # type: ignore[import-not-found]
-
-#if __name__ == "__main__":
-#    try:
-#        if "display" in dir():
-#           _result = display()  # type: ignore[name-defined]  # noqa: F821 - defined in user code
-#        else:
-#            # Fallback for data modules that define classes/functions but no display().
-#            # Just report success so the step doesn't error out.
-#            _result = {
-#                "_display_type": "stats",
-#                "stats": [("Status", "Module loaded successfully")],
-#            }
-#        _serialized = _serialize_result(_result)
-#        _json_str = _dumps(_serialized)
-#    except Exception as _display_err:
-#        _json_str = json.dumps({"type": "error", "value": traceback.format_exc()})
-#    print("__RESULT_START__")
-#    print(_json_str)
-#    print("__RESULT_END__")
